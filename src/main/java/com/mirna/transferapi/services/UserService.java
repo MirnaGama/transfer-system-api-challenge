@@ -12,6 +12,7 @@ import com.mirna.transferapi.exceptions.EntityNotPresentException;
 import com.mirna.transferapi.exceptions.UserDocumentException;
 import com.mirna.transferapi.exceptions.UserEmailException;
 import com.mirna.transferapi.repositories.UserRepository;
+import com.mirna.transferapi.security.auth.util.PasswordEncryptorUtil;
 
 @Service
 public class UserService {
@@ -34,12 +35,15 @@ public class UserService {
 	}
 	
 	public UserDTO addUser(UserDTO userDTO) throws UserEmailException, UserDocumentException {
-
+		
 		if (userRepository.findUserByEmail(userDTO.getEmail()).isPresent()) {
 			throw new UserEmailException();
 		} else if (userRepository.findUserByDocument(userDTO.getDocument()).isPresent()) {
 			throw new UserDocumentException();
 		}
+		
+		String encodedPassword = PasswordEncryptorUtil.encryptPassword(userDTO.getPassword());
+		userDTO.setPassword(encodedPassword);
 
 		User userEntity = userMapper.toUserEntity(userDTO);
 		userEntity = userRepository.save(userEntity);
