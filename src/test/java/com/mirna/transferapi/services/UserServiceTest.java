@@ -20,6 +20,9 @@ import com.mirna.transferapi.domain.dtos.UserDTO;
 import com.mirna.transferapi.domain.entities.User;
 import com.mirna.transferapi.domain.enums.UserType;
 import com.mirna.transferapi.domain.mappers.UserMapper;
+import com.mirna.transferapi.exceptions.EntityNotPresentException;
+import com.mirna.transferapi.exceptions.UserDocumentException;
+import com.mirna.transferapi.exceptions.UserEmailException;
 import com.mirna.transferapi.repositories.UserRepository;
 import com.mirna.transferapi.security.auth.util.PasswordEncryptorUtil;
 
@@ -43,7 +46,7 @@ public class UserServiceTest {
 	
 	@Test
 	@DisplayName("Should add user successfully")
-	public void testAddUser() throws Exception {
+	public void testAddUserSuccess() throws Exception {
 
 		UserDTO userDTO = getUserDTO();
 		User user = getUserEntity();
@@ -59,8 +62,38 @@ public class UserServiceTest {
 	}
 	
 	@Test
+	@DisplayName("Should throw exception when adding user with same email")
+	public void testAddUserFailureEmail() throws Exception {
+
+		UserDTO userDTO = getUserDTO();
+		User user = getUserEntity();
+		
+		when(userMapper.toUserEntity(userDTO)).thenReturn(user);
+		when(userMapper.toUserDTO(user)).thenReturn(userDTO);
+		
+		when(userRepository.findUserByEmail(user.getEmail())).thenReturn(Optional.of(user));
+
+		assertThrows(UserEmailException.class, () -> userService.addUser(userDTO));
+	}
+	
+	@Test
+	@DisplayName("Should throw exception when adding user with same document number")
+	public void testAddUserFailureDocument() throws Exception {
+
+		UserDTO userDTO = getUserDTO();
+		User user = getUserEntity();
+		
+		when(userMapper.toUserEntity(userDTO)).thenReturn(user);
+		when(userMapper.toUserDTO(user)).thenReturn(userDTO);
+		
+		when(userRepository.findUserByDocument(user.getDocument())).thenReturn(Optional.of(user));
+
+		assertThrows(UserDocumentException.class, () -> userService.addUser(userDTO));
+	}
+	
+	@Test
 	@DisplayName("Should fetch user by document successfully")
-	public void testFetchUser() throws Exception {
+	public void testFetchUserSuccess() throws Exception {
         String document = "1234567";
 		User user = getUserEntity();
 		
@@ -70,6 +103,15 @@ public class UserServiceTest {
 
 		assertThat(userAdded).isNotNull();
 	}
+	
+	@Test
+	@DisplayName("Should throw exception if the user document does not exist when fetching the user")
+	public void testFetchUserFailure() throws Exception {
+        String document = "1234567";
+		
+		assertThrows(EntityNotPresentException.class, () -> userService.fetchUser(document));
+	}
+
 	
 	private UserDTO getUserDTO() {
 		UserDTO userDTO = new UserDTO();
