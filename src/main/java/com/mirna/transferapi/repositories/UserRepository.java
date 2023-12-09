@@ -9,7 +9,7 @@ import com.mirna.transferapi.domain.entities.User;
 
 public interface UserRepository extends JpaRepository<User, Long>{
 
-	Optional<User> findUserByDocument(@Param("screenName") String document);
+	Optional<User> findUserByDocument(@Param("document") String document);
 	
 	Optional<User> findUserByEmail(@Param("email") String email);
 }
