@@ -51,7 +51,7 @@ public class UserService {
 		return userMapper.toUserDTO(userEntity);
 	}
 	
-	protected User updateUser(User user, String document) throws EntityNotPresentException {
+	public User updateUser(User user, String document) throws EntityNotPresentException {
 		
 		if (userRepository.findUserByDocument(document).isPresent()) {
 			return userRepository.save(user);
