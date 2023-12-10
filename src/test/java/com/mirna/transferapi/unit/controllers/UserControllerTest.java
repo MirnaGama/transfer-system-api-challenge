@@ -1,12 +1,10 @@
-package com.mirna.transferapi.controllers;
+package com.mirna.transferapi.unit.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.mirna.transferapi.controllers.UserController;
 import com.mirna.transferapi.domain.dtos.UserDTO;
 import com.mirna.transferapi.domain.entities.User;
 import com.mirna.transferapi.domain.enums.UserType;

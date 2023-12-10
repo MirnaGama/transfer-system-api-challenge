@@ -1,4 +1,4 @@
-package com.mirna.transferapi.repositories;
+package com.mirna.transferapi.unit.repositories;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.mirna.transferapi.domain.entities.User;
 import com.mirna.transferapi.domain.enums.UserType;
+import com.mirna.transferapi.repositories.UserRepository;
 
 @DataJpaTest
 @ActiveProfiles("test")

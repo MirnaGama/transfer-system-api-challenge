@@ -1,4 +1,4 @@
-package com.mirna.transferapi.services;
+package com.mirna.transferapi.unit.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,7 +24,7 @@ import com.mirna.transferapi.exceptions.EntityNotPresentException;
 import com.mirna.transferapi.exceptions.UserDocumentException;
 import com.mirna.transferapi.exceptions.UserEmailException;
 import com.mirna.transferapi.repositories.UserRepository;
-import com.mirna.transferapi.security.auth.util.PasswordEncryptorUtil;
+import com.mirna.transferapi.services.UserService;
 
 @DataJpaTest
 @ActiveProfiles("test")
