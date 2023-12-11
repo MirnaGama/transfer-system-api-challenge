@@ -5,9 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,6 +25,7 @@ import com.mirna.transferapi.services.TransactionService;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureMockMvc(addFilters = false)
 public class TransactionServiceIntegrationTest {
 
@@ -32,7 +35,7 @@ public class TransactionServiceIntegrationTest {
 	@Autowired
 	private UserRepository userRepository;
 	
-	@BeforeEach
+	@BeforeAll
 	public void init() {
 		User user = new User();
 		user.setEmail("mary@gmail.com");
@@ -59,7 +62,7 @@ public class TransactionServiceIntegrationTest {
 	@Test
 	@DisplayName("Should add transaction successfully")
 	public void testAddTransaction() throws Exception {
-
+		
 		TransactionDTO transactionDTO = new TransactionDTO();
 		transactionDTO.setAmount(new BigDecimal(500));
 		transactionDTO.setReceiverDocument("111111111");
@@ -82,7 +85,7 @@ public class TransactionServiceIntegrationTest {
 	    User receiver = transaction.getReceiver();
 	    
 	    assertTrue(sender.getBalance().compareTo(senderFinalBalance) == 0);
-	    assertTrue(receiver.getBalance().compareTo(receiverFinalBalance) == 0);
+	    assertTrue(receiver.getBalance().compareTo(receiverFinalBalance) == 0);   
 	}
 	
 }

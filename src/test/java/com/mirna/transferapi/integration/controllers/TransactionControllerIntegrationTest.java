@@ -3,9 +3,11 @@ package com.mirna.transferapi.integration.controllers;
 import java.math.BigDecimal;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,6 +29,7 @@ import com.mirna.transferapi.security.auth.util.PasswordEncryptorUtil;
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc(addFilters = false)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TransactionControllerIntegrationTest {
 
 	@Autowired
@@ -41,7 +44,7 @@ public class TransactionControllerIntegrationTest {
 	@Autowired
 	ObjectMapper mapper;
 
-	@BeforeEach
+	@BeforeAll
 	public void init() {
 		User user = new User();
 		user.setEmail("mary@gmail.com");
