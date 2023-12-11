@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mirna.transferapi.domain.dtos.TransactionDTO;
 import com.mirna.transferapi.domain.entities.Transaction;
 import com.mirna.transferapi.exceptions.EntityNotPresentException;
+import com.mirna.transferapi.exceptions.InsufficientBalanceException;
 import com.mirna.transferapi.exceptions.SenderUserTypeInvalidException;
 import com.mirna.transferapi.services.TransactionService;
 
@@ -40,6 +41,11 @@ public class TransactionController {
 			body.put("message", userSenderInvalidException.getMessage());
 
 			return new ResponseEntity<>(body, HttpStatus.UNPROCESSABLE_ENTITY);
+		} catch (InsufficientBalanceException insufficientBalanceException) {
+			Map<String, Object> body = new HashMap<>();
+			body.put("message", insufficientBalanceException.getMessage());
+
+			return new ResponseEntity<>(body, HttpStatus.NOT_ACCEPTABLE);
 		}
 
 		return ResponseEntity.ok(result);

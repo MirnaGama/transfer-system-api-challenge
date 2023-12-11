@@ -11,6 +11,7 @@ import com.mirna.transferapi.domain.entities.Transaction;
 import com.mirna.transferapi.domain.entities.User;
 import com.mirna.transferapi.domain.enums.UserType;
 import com.mirna.transferapi.exceptions.EntityNotPresentException;
+import com.mirna.transferapi.exceptions.InsufficientBalanceException;
 import com.mirna.transferapi.exceptions.SenderUserTypeInvalidException;
 import com.mirna.transferapi.repositories.TransactionRepository;
 
@@ -23,16 +24,20 @@ public class TransactionService {
 	@Autowired
 	private UserService userService;
 
-	public Transaction addTransaction(TransactionDTO transactionDTO) throws EntityNotPresentException, SenderUserTypeInvalidException {
+	public Transaction addTransaction(TransactionDTO transactionDTO) throws EntityNotPresentException, SenderUserTypeInvalidException, InsufficientBalanceException {
 
 		Transaction transaction = new Transaction();
 
 		User sender = userService.fetchUser(transactionDTO.getSenderDocument());
 		User receiver = userService.fetchUser(transactionDTO.getReceiverDocument());
 		
-		if (sender.getUserType().equals(UserType.SHOPKEEPER)) {
+		BigDecimal senderFinalBalance = sender.getBalance().subtract(transactionDTO.getAmount());
+		
+		if (senderFinalBalance.compareTo(BigDecimal.ZERO) < 0) {
+			throw new InsufficientBalanceException();
+		} else if (sender.getUserType().equals(UserType.SHOPKEEPER)) {
 			throw new SenderUserTypeInvalidException();
-		}
+		} 
 
 		transaction.setSender(sender);
 		transaction.setReceiver(receiver);
