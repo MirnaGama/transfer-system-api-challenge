@@ -40,6 +40,9 @@ public class TransactionService {
 		userService.updateUser(sender, sender.getDocument());
 		userService.updateUser(receiver, receiver.getDocument());
 		
+		transaction.setSender(sender);
+		transaction.setReceiver(receiver);
+		
 		return transactionRepository.save(transaction);
 	}
 }
