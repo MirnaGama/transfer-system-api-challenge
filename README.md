@@ -14,6 +14,11 @@
 
 - [ ] R7 - After receiving the payment, the user or shopkeeper must receive a notification (email, SMS) sent by a third-party service and this service may eventually become unavailable/unstable. Use this mock to simulate: https://run.mocky.io/v3/54dc2cf1-3add-45b5-b5a9-6bf7e7f1f4a6
 
+
+### Data Modeling
+
+![Relational Data Modeling](relational-data-modeling.png)
+
 ### Technical specifications
 - Data Modeling
 - RESTFul Architecture
