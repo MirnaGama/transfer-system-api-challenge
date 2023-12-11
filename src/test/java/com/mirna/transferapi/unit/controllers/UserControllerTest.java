@@ -45,7 +45,7 @@ public class UserControllerTest {
 	}
 	
 	@Test
-	@DisplayName("Should add user successfully")
+	@DisplayName("Should return http status ok when adding user successfully")
 	public void testAddUser() throws Exception {
 
 		MockHttpServletRequest request = new MockHttpServletRequest();
@@ -61,7 +61,7 @@ public class UserControllerTest {
 	}
 	
 	@Test
-	@DisplayName("Should throw exception when adding user with same document")
+	@DisplayName("Should return http status unprocessable entity when adding user with same document")
 	public void testAddUserDocumentFailure() throws Exception {
 
 		MockHttpServletRequest request = new MockHttpServletRequest();
@@ -77,7 +77,7 @@ public class UserControllerTest {
 	}
 	
 	@Test
-	@DisplayName("Should throw exception when adding user with same email")
+	@DisplayName("Should return http status unprocessable entity when adding user with same email")
 	public void testAddUserEmailFailure() throws Exception {
 
 		MockHttpServletRequest request = new MockHttpServletRequest();
@@ -93,7 +93,7 @@ public class UserControllerTest {
 	}
 	
 	@Test
-	@DisplayName("Should get user successfully")
+	@DisplayName("Should return http status ok when getting user successfully")
 	public void testFetchUser() throws Exception {
 	    
         String document = "1234567";
