@@ -111,7 +111,32 @@ public class UserServiceTest {
 		
 		assertThrows(EntityNotPresentException.class, () -> userService.fetchUser(document));
 	}
-
+	
+	@Test
+	@DisplayName("Should update user by document successfully")
+	public void testUpdateUserSuccess() throws Exception {
+        String document = "1234567";
+		
+        User user = getUserEntity();
+        
+        when(userRepository.findUserByDocument(document)).thenReturn(Optional.of(user));
+        
+        when(userRepository.save(user)).thenReturn(user);
+        
+        User updatedUser = userService.updateUser(user, document);
+		
+        assertThat(updatedUser).isNotNull();
+	}
+	
+	@Test
+	@DisplayName("Should throw exception if the user document does not exist when updating the user")
+	public void testUpdateUserFailure() throws Exception {
+        String document = "1234567";
+		
+        User user = getUserEntity();
+        
+        assertThrows(EntityNotPresentException.class, () -> userService.updateUser(user, document));
+	}
 	
 	private UserDTO getUserDTO() {
 		UserDTO userDTO = new UserDTO();
