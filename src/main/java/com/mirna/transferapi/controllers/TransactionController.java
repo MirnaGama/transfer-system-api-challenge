@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mirna.transferapi.domain.dtos.TransactionDTO;
 import com.mirna.transferapi.domain.entities.Transaction;
 import com.mirna.transferapi.exceptions.EntityNotPresentException;
+import com.mirna.transferapi.exceptions.SenderUserTypeInvalidException;
 import com.mirna.transferapi.services.TransactionService;
 
 @RestController
@@ -34,6 +35,11 @@ public class TransactionController {
 			body.put("message", entityNotPresentException.getMessage());
 
 			return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+		} catch (SenderUserTypeInvalidException userSenderInvalidException) {
+			Map<String, Object> body = new HashMap<>();
+			body.put("message", userSenderInvalidException.getMessage());
+
+			return new ResponseEntity<>(body, HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 
 		return ResponseEntity.ok(result);
