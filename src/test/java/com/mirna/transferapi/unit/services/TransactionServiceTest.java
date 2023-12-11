@@ -22,6 +22,7 @@ import com.mirna.transferapi.domain.entities.Transaction;
 import com.mirna.transferapi.domain.entities.User;
 import com.mirna.transferapi.domain.enums.UserType;
 import com.mirna.transferapi.exceptions.EntityNotPresentException;
+import com.mirna.transferapi.exceptions.SenderUserTypeInvalidException;
 import com.mirna.transferapi.repositories.TransactionRepository;
 import com.mirna.transferapi.services.TransactionService;
 import com.mirna.transferapi.services.UserService;
@@ -70,13 +71,30 @@ public class TransactionServiceTest {
 	
 	@Test
 	@DisplayName("Should throw exception if any user does not exist when adding the transaction")
-	public void testAddTransactionFailure() throws Exception {
+	public void testAddTransactionUserDoesNotExistFailure() throws Exception {
 
 		TransactionDTO transactionDTO = getTransactionDTO();
 		
 		when(userService.fetchUser(any(String.class))).thenThrow(EntityNotPresentException.class);
 		
 		assertThrows(EntityNotPresentException.class, () -> transactionService.addTransaction(transactionDTO));
+	}
+	
+	@Test
+	@DisplayName("Should throw exception if sender user type is shopkeeper when adding the transaction")
+	public void testAddTransactionSenderUserTypeInvalidFailure() throws Exception {
+
+		TransactionDTO transactionDTO = getTransactionDTO();
+		
+		Transaction transaction = getTransactionEntity();
+		
+		User sender = getInvalidSender();
+		User receiver = getReceiver();
+		
+		when(userService.fetchUser(transactionDTO.getSenderDocument())).thenReturn(sender);
+		when(userService.fetchUser(transactionDTO.getReceiverDocument())).thenReturn(receiver);
+		
+		assertThrows(SenderUserTypeInvalidException.class, () -> transactionService.addTransaction(transactionDTO));
 	}
 	
 	private User getSender() {
@@ -89,6 +107,20 @@ public class TransactionServiceTest {
 		user.setFirstName("John");
 		user.setLastName("Doe");
 		user.setUserType(UserType.COMMON);
+		
+		return user;
+	}
+	
+	private User getInvalidSender() {
+		User user = new User();
+		user.setId(1L);
+		user.setDocument("11111111");
+		user.setEmail("john@gmail.com");
+		user.setBalance(new BigDecimal(1000));
+		user.setPassword("p3ss3rd");
+		user.setFirstName("John");
+		user.setLastName("Doe");
+		user.setUserType(UserType.SHOPKEEPER);
 		
 		return user;
 	}
