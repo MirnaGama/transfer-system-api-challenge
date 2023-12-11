@@ -2,7 +2,7 @@
 
 - [X] R1 - There will be two types of users, both need full name, CPF/CNPJ, email and passsword. CPF/CNPJ and emails must be unique in the system. Therefore, the system must only allow one registration with the same CPF or email address.
 
-- [ ] R2 - Users can send money (transfer) to shopkeepers and between users.
+- [X] R2 - Users can send money (transfer) to shopkeepers and between users.
 
 - [ ] R3 - Shopkeepers *only receive* transfers, they do not send money to anyone.
 
