@@ -4,7 +4,7 @@
 
 - [X] R2 - Users can send money (transfer) to shopkeepers and between users.
 
-- [ ] R3 - Shopkeepers *only receive* transfers, they do not send money to anyone.
+- [X] R3 - Shopkeepers *only receive* transfers, they do not send money to anyone.
 
 - [ ] R4 - There must be validation so that the user has a valid balance before perform the transfer.
 
