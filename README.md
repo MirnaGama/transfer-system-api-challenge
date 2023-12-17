@@ -10,7 +10,7 @@
 
 - [X] R5 - Before finish the transfer, the system must consult an external authorizing service, use this mock to simulate: https://run.mocky.io/v3/5794d450-d2e2-4412-8131-73d0293ac1cc
 
-- [ ] R6 - The transfer operation must be a transaction (i.e. reversed in any case of inconsistency) and the money must return to the wallet of the sending user.
+- [X] R6 - The transfer operation must be a transaction (i.e. reversed in any case of inconsistency) and the money must return to the wallet of the sending user.
 
 - [ ] R7 - After receiving the payment, the user or shopkeeper must receive a notification (email, SMS) sent by a third-party service and this service may eventually become unavailable/unstable. Use this mock to simulate: https://run.mocky.io/v3/54dc2cf1-3add-45b5-b5a9-6bf7e7f1f4a6
 
