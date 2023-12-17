@@ -16,6 +16,8 @@ import com.mirna.transferapi.exceptions.SenderUserTypeInvalidException;
 import com.mirna.transferapi.exceptions.UnauthorizedTransactionException;
 import com.mirna.transferapi.repositories.TransactionRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class TransactionService {
 
@@ -28,6 +30,8 @@ public class TransactionService {
 	@Autowired
 	private AuthorizationService authorizationService;
 
+	@Transactional
+    (rollbackOn = Exception.class)
 	public Transaction addTransaction(TransactionDTO transactionDTO) throws EntityNotPresentException, SenderUserTypeInvalidException, InsufficientBalanceException, UnauthorizedTransactionException {
 
 		Transaction transaction = new Transaction();
