@@ -66,12 +66,10 @@ public class TransactionControllerTest {
 
 		MockHttpServletRequest request = new MockHttpServletRequest();
 	    RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
-
-	    TransactionDTO transactionDTO = getTransactionDTO();
 	     
 	    when(transactionService.addTransaction(any(TransactionDTO.class))).thenThrow(EntityNotPresentException.class);
 
-	    ResponseEntity<Object> responseEntity = transactionController.addTransaction(transactionDTO);
+	    ResponseEntity<Object> responseEntity = transactionController.addTransaction(mock(TransactionDTO.class));
 
 	    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 	}
@@ -82,13 +80,10 @@ public class TransactionControllerTest {
 
 		MockHttpServletRequest request = new MockHttpServletRequest();
 	    RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
-
-	    TransactionDTO transactionDTO = getInvalidUserTypeSenderTransactionDTO();
-	    Transaction transaction = getInvalidUserTypeSenderTransactionEntity();
 	    
 	    when(transactionService.addTransaction(any(TransactionDTO.class))).thenThrow(SenderUserTypeInvalidException.class);
 	    
-	    ResponseEntity<Object> responseEntity = transactionController.addTransaction(transactionDTO);
+	    ResponseEntity<Object> responseEntity = transactionController.addTransaction(mock(TransactionDTO.class));
 
 	    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
 	}
@@ -135,34 +130,11 @@ public class TransactionControllerTest {
 		return user;
 	}
 	
-	private User getInvalidUserTypeSender() {
-		User user = new User();
-		user.setId(1L);
-		user.setDocument("333333333");
-		user.setEmail("store@gmail.com");
-		user.setBalance(new BigDecimal(1000));
-		user.setPassword("p3ss3rd");
-		user.setFirstName("Store");
-		user.setLastName("Test");
-		user.setUserType(UserType.SHOPKEEPER);
-		
-		return user;
-	}
-	
 	private TransactionDTO getTransactionDTO() {
 		TransactionDTO transactionDTO = new TransactionDTO();
 		transactionDTO.setAmount(new BigDecimal(500));
 		transactionDTO.setReceiverDocument("11111111");
 		transactionDTO.setSenderDocument("22222222");
-		
-		return transactionDTO;
-	}
-	
-	private TransactionDTO getInvalidUserTypeSenderTransactionDTO() {
-		TransactionDTO transactionDTO = new TransactionDTO();
-		transactionDTO.setAmount(new BigDecimal(500));
-		transactionDTO.setReceiverDocument("11111111");
-		transactionDTO.setSenderDocument("333333333");
 		
 		return transactionDTO;
 	}
@@ -176,16 +148,5 @@ public class TransactionControllerTest {
 		
 		return transaction;
 	}
-	
-	private Transaction getInvalidUserTypeSenderTransactionEntity() {
-		Transaction transaction = new Transaction();
-		transaction.setAmount(new BigDecimal(500));
-		transaction.setReceiver(getReceiver());
-		transaction.setSender(getInvalidUserTypeSender());
-		transaction.setTimestamp(LocalDateTime.now());
-		
-		return transaction;
-	}
-	
 	
 }
