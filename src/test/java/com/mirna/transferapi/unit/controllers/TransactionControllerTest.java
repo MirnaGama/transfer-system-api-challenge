@@ -2,6 +2,7 @@ package com.mirna.transferapi.unit.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -25,6 +26,7 @@ import com.mirna.transferapi.domain.entities.Transaction;
 import com.mirna.transferapi.domain.entities.User;
 import com.mirna.transferapi.domain.enums.UserType;
 import com.mirna.transferapi.exceptions.EntityNotPresentException;
+import com.mirna.transferapi.exceptions.InsufficientBalanceException;
 import com.mirna.transferapi.exceptions.SenderUserTypeInvalidException;
 import com.mirna.transferapi.services.TransactionService;
 
@@ -89,6 +91,20 @@ public class TransactionControllerTest {
 	    ResponseEntity<Object> responseEntity = transactionController.addTransaction(transactionDTO);
 
 	    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
+	}
+	
+	@Test
+	@DisplayName("Should return http status not acceptable when adding transiction with sender with insufficient balance")
+	public void testAddTransactionSenderBalanceInvalidFailure() throws Exception {
+
+		MockHttpServletRequest request = new MockHttpServletRequest();
+	    RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+	    
+	    when(transactionService.addTransaction(any(TransactionDTO.class))).thenThrow(InsufficientBalanceException.class);
+	    
+	    ResponseEntity<Object> responseEntity = transactionController.addTransaction(mock(TransactionDTO.class));
+
+	    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_ACCEPTABLE);
 	}
 
 	private User getSender() {
