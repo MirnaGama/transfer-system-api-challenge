@@ -16,6 +16,7 @@ import com.mirna.transferapi.domain.entities.Transaction;
 import com.mirna.transferapi.exceptions.EntityNotPresentException;
 import com.mirna.transferapi.exceptions.InsufficientBalanceException;
 import com.mirna.transferapi.exceptions.SenderUserTypeInvalidException;
+import com.mirna.transferapi.exceptions.UnauthorizedTransactionException;
 import com.mirna.transferapi.services.TransactionService;
 
 @RestController
@@ -46,6 +47,11 @@ public class TransactionController {
 			body.put("message", insufficientBalanceException.getMessage());
 
 			return new ResponseEntity<>(body, HttpStatus.NOT_ACCEPTABLE);
+		} catch (UnauthorizedTransactionException unauthorizedTransactionException) {
+			Map<String, Object> body = new HashMap<>();
+			body.put("message", unauthorizedTransactionException.getMessage());
+
+			return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
 		}
 
 		return ResponseEntity.ok(result);
