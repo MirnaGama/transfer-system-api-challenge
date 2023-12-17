@@ -78,9 +78,19 @@ public class TransactionControllerIntegrationTest {
 		user3.setPassword(PasswordEncryptorUtil.encryptPassword("p4ss0wrd"));
 		user3.setUserType(UserType.SHOPKEEPER);
 
+		User user4 = new User();
+		user4.setEmail("josh@gmail.com");
+		user4.setFirstName("Josh");
+		user4.setLastName("Test");
+		user4.setDocument("444444444");
+		user4.setBalance(new BigDecimal(50));
+		user4.setPassword(PasswordEncryptorUtil.encryptPassword("p4ss0wrd"));
+		user4.setUserType(UserType.COMMON);
+
 		userRepository.save(user);
 		userRepository.save(user2);
 		userRepository.save(user3);
+		userRepository.save(user4);
 	}
 	
 	@AfterAll
@@ -137,6 +147,22 @@ public class TransactionControllerIntegrationTest {
 		mockMvc.perform(MockMvcRequestBuilders.post("/v1/transactions").contentType(MediaType.APPLICATION_JSON)
 				.characterEncoding("UTF-8").content(transactionDTOContent))
 				.andExpect(MockMvcResultMatchers.status().isUnprocessableEntity()).andDo(MockMvcResultHandlers.print());
+	}
+	
+	@Test
+	@DisplayName("Should return http status not acceptable when adding transiction with sender balance below the amount")
+	public void testAddTransactionSenderInsufficientBalanceFailure() throws Exception {
+
+		TransactionDTO transactionDTO = new TransactionDTO();
+		transactionDTO.setAmount(new BigDecimal(100));
+		transactionDTO.setReceiverDocument("111111111");
+		transactionDTO.setSenderDocument("444444444");
+
+		String transactionDTOContent = mapper.writeValueAsString(transactionDTO);
+
+		mockMvc.perform(MockMvcRequestBuilders.post("/v1/transactions").contentType(MediaType.APPLICATION_JSON)
+				.characterEncoding("UTF-8").content(transactionDTOContent))
+				.andExpect(MockMvcResultMatchers.status().isNotAcceptable()).andDo(MockMvcResultHandlers.print());
 	}
 
 }

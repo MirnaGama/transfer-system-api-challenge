@@ -23,6 +23,7 @@ import com.mirna.transferapi.domain.entities.Transaction;
 import com.mirna.transferapi.domain.entities.User;
 import com.mirna.transferapi.domain.enums.UserType;
 import com.mirna.transferapi.exceptions.EntityNotPresentException;
+import com.mirna.transferapi.exceptions.InsufficientBalanceException;
 import com.mirna.transferapi.exceptions.SenderUserTypeInvalidException;
 import com.mirna.transferapi.repositories.TransactionRepository;
 import com.mirna.transferapi.repositories.UserRepository;
@@ -72,10 +73,20 @@ public class TransactionServiceIntegrationTest {
 		user3.setBalance(new BigDecimal(1000));
 		user3.setPassword(PasswordEncryptorUtil.encryptPassword("p4ss0wrd"));
 		user3.setUserType(UserType.SHOPKEEPER);
+		
+		User user4 = new User();
+		user4.setEmail("josh@gmail.com");
+		user4.setFirstName("Josh");
+		user4.setLastName("Test");
+		user4.setDocument("444444444");
+		user4.setBalance(new BigDecimal(50));
+		user4.setPassword(PasswordEncryptorUtil.encryptPassword("p4ss0wrd"));
+		user4.setUserType(UserType.COMMON);
 
 		userRepository.save(user);
 		userRepository.save(user2);
 		userRepository.save(user3);
+		userRepository.save(user4);
 	}
 
 	@AfterAll
@@ -148,6 +159,26 @@ public class TransactionServiceIntegrationTest {
 		assertTrue(sender.getUserType().equals(UserType.SHOPKEEPER));
 
 		assertThrows(SenderUserTypeInvalidException.class, () -> transactionService.addTransaction(transactionDTO));
+	}
+	
+	@Test
+	@DisplayName("Should throw exception if sender balance is below the amount when adding the transaction")
+	public void testAddTransactionSenderInsufficientBalanceFailure() throws Exception {
+
+		TransactionDTO transactionDTO = new TransactionDTO();
+		transactionDTO.setAmount(new BigDecimal(100));
+		transactionDTO.setSenderDocument("444444444");
+		transactionDTO.setReceiverDocument("222222222");
+
+		User sender = userRepository.findUserByDocument(transactionDTO.getSenderDocument()).get();
+		User receiver = userRepository.findUserByDocument(transactionDTO.getReceiverDocument()).get();
+
+		assertThat(sender).isNotNull();
+		assertThat(receiver).isNotNull();
+		
+		assertTrue(sender.getBalance().subtract(transactionDTO.getAmount()).compareTo(BigDecimal.ZERO) < 0);
+
+		assertThrows(InsufficientBalanceException.class, () -> transactionService.addTransaction(transactionDTO));
 	}
 
 }
