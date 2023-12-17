@@ -28,6 +28,7 @@ import com.mirna.transferapi.domain.enums.UserType;
 import com.mirna.transferapi.exceptions.EntityNotPresentException;
 import com.mirna.transferapi.exceptions.InsufficientBalanceException;
 import com.mirna.transferapi.exceptions.SenderUserTypeInvalidException;
+import com.mirna.transferapi.exceptions.UnauthorizedTransactionException;
 import com.mirna.transferapi.services.TransactionService;
 
 public class TransactionControllerTest {
@@ -100,6 +101,20 @@ public class TransactionControllerTest {
 	    ResponseEntity<Object> responseEntity = transactionController.addTransaction(mock(TransactionDTO.class));
 
 	    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_ACCEPTABLE);
+	}
+	
+	@Test
+	@DisplayName("Should return http status unauthorized when adding transiction with not authorized request")
+	public void testAddTransactionUnauthorizedFailure() throws Exception {
+
+		MockHttpServletRequest request = new MockHttpServletRequest();
+	    RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+	    
+	    when(transactionService.addTransaction(any(TransactionDTO.class))).thenThrow(UnauthorizedTransactionException.class);
+	    
+	    ResponseEntity<Object> responseEntity = transactionController.addTransaction(mock(TransactionDTO.class));
+
+	    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
 	}
 
 	private User getSender() {
