@@ -24,7 +24,9 @@ import com.mirna.transferapi.domain.enums.UserType;
 import com.mirna.transferapi.exceptions.EntityNotPresentException;
 import com.mirna.transferapi.exceptions.InsufficientBalanceException;
 import com.mirna.transferapi.exceptions.SenderUserTypeInvalidException;
+import com.mirna.transferapi.exceptions.UnauthorizedTransactionException;
 import com.mirna.transferapi.repositories.TransactionRepository;
+import com.mirna.transferapi.services.AuthorizationService;
 import com.mirna.transferapi.services.TransactionService;
 import com.mirna.transferapi.services.UserService;
 
@@ -40,6 +42,9 @@ public class TransactionServiceTest {
 	
 	@Mock
 	private UserService userService;
+	
+	@Mock
+	private AuthorizationService authorizationService;
 	
 	@BeforeEach
 	public void setUp() {
@@ -59,6 +64,8 @@ public class TransactionServiceTest {
 		
 		when(userService.fetchUser(transactionDTO.getSenderDocument())).thenReturn(sender);
 		when(userService.fetchUser(transactionDTO.getReceiverDocument())).thenReturn(receiver);
+		
+		when(authorizationService.isTransactionAuthorized()).thenReturn(true);
 		
 		when(userService.updateUser(sender, sender.getDocument())).thenReturn(sender);
 		when(userService.updateUser(receiver, receiver.getDocument())).thenReturn(receiver);
@@ -118,6 +125,26 @@ public class TransactionServiceTest {
 		
 		assertThrows(InsufficientBalanceException.class, () -> transactionService.addTransaction(transactionDTO));
 	}
+	
+	@Test
+	@DisplayName("Should throw exception if transaction is not authorized")
+	public void testAddTransactionUnauthorizedFailure() throws Exception {
+
+		TransactionDTO transactionDTO = getTransactionDTO();
+		
+		Transaction transaction = getTransactionEntity();
+		
+		User sender = getSender();
+		User receiver = getReceiver();
+		
+		when(userService.fetchUser(transactionDTO.getSenderDocument())).thenReturn(sender);
+		when(userService.fetchUser(transactionDTO.getReceiverDocument())).thenReturn(receiver);
+		
+		when(authorizationService.isTransactionAuthorized()).thenReturn(false);
+		
+		assertThrows(UnauthorizedTransactionException.class, () -> transactionService.addTransaction(transactionDTO));
+	}
+	
 	
 	private User getSender() {
 		User user = new User();
