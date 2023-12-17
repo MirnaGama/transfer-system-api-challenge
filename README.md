@@ -8,7 +8,7 @@
 
 - [X] R4 - There must be validation so that the user has a valid balance before perform the transfer.
 
-- [ ] R5 - Before finish the transfer, the system must consult an external authorizing service, use this mock to simulate: https://run.mocky.io/v3/5794d450-d2e2-4412-8131-73d0293ac1cc
+- [X] R5 - Before finish the transfer, the system must consult an external authorizing service, use this mock to simulate: https://run.mocky.io/v3/5794d450-d2e2-4412-8131-73d0293ac1cc
 
 - [ ] R6 - The transfer operation must be a transaction (i.e. reversed in any case of inconsistency) and the money must return to the wallet of the sending user.
 
